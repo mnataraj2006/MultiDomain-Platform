@@ -1,0 +1,127 @@
+/* Inherit shared styles from AdminUsers.css */
+/* Specific overrides for Booking Monitoring */
+
+.bookings-table-container {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.admin-booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    /* Ensure no squishing on small screens */
+}
+
+.admin-booking-table th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.admin-booking-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.admin-booking-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.booking-id-cell {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.service-cell h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.service-cell span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.entity-cell h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.entity-cell span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+}
+
+.date-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Status Badges - Consistent with Provider View */
+.status-badge-admin {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge-admin::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.admin-status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.admin-status-accepted {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.admin-status-inprogress {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.admin-status-completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.admin-status-cancelled {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 0.5rem;
+}

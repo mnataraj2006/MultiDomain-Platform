@@ -1,0 +1,155 @@
+/* Shared container for small centered pages */
+.utility-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem;
+    text-align: center;
+}
+
+.utility-card {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 3rem;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.utility-title {
+    font-size: 2.5rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.utility-title.error {
+    color: #ef4444;
+}
+
+.utility-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.utility-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.utility-btn:hover {
+    background: #1e40af;
+}
+
+/* Notifications Page */
+.notifications-layout {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.notification-card {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid transparent;
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.notification-card.unread {
+    background: rgba(59, 130, 246, 0.05);
+    border-left-color: var(--primary-blue);
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.notif-icon {
+    margin-top: 2px;
+    color: var(--primary-blue);
+    min-width: 24px;
+}
+
+.notif-content {
+    flex: 1;
+}
+
+.notif-msg {
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+.notif-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.notif-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.btn-link {
+    background: transparent;
+    border: none;
+    color: var(--primary-blue);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Settings Page */
+.settings-layout {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.settings-card {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.settings-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.settings-header h2 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin: 0;
+}

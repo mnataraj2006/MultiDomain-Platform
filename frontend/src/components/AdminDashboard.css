@@ -1,0 +1,308 @@
+/* Inheriting base vars from index.css: var(--bg-dark), var(--bg-panel-right), etc. */
+
+.admin-container {
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.admin-header {
+    height: 70px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(30, 32, 35, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-icon-box {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-dot {
+    width: 16px;
+    height: 16px;
+    background: #ef4444;
+    /* Red accent for Admin? Or Blue? Let's stick to Primary Blue for main branding, but maybe Red for Admin distinctness? User said "Same color palette" so Blue/Standard is safer. */
+    background: var(--primary-blue);
+    box-shadow: 0 0 8px var(--primary-blue);
+}
+
+.admin-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.admin-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.logout-btn-admin {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.logout-btn-admin:hover {
+    border-color: var(--error-red);
+    color: var(--error-red);
+}
+
+/* Content Area */
+.admin-content {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Overview Card */
+.overview-card {
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.8), rgba(40, 42, 48, 0.6));
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.overview-card h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    background: linear-gradient(to right, #fff, #9ca3af);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.overview-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* KPI Section */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-box {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-box:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-blue);
+}
+
+.kpi-icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.kpi-blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.kpi-purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: #a78bfa;
+}
+
+.kpi-green {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+}
+
+.kpi-orange {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+.kpi-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.kpi-title {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Activity & Alerts Grid */
+.dashboard-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.panel-card {
+    background: var(--bg-panel-right);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+/* Activity Stats */
+.activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.activity-row:last-child {
+    border-bottom: none;
+}
+
+.act-label {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.act-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Alerts List */
+.alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.alert-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 3px solid var(--primary-blue);
+}
+
+.alert-item.urgent {
+    border-left-color: var(--error-red);
+}
+
+.alert-item.warning {
+    border-left-color: #f59e0b;
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.alert-msg {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-split {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-nav {
+        display: none;
+        /* Mobile menu needed logic separately, hide strict desk nav */
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
