@@ -13,12 +13,33 @@ connectDB();
 
 const app = express();
 const httpServer = createServer(app);
-const allowedOrigin = process.env.CORS_ORIGIN || '*';
+
+// Parse comma-separated origins, e.g. "https://foo.vercel.app,https://bar.vercel.app"
+const rawOrigins = (process.env.CORS_ORIGIN || '').split(',').map(o => o.trim()).filter(Boolean);
+
+const originFn = (origin, callback) => {
+    // Allow server-to-server requests (no origin) and local dev
+    if (!origin || origin.startsWith('http://localhost')) {
+        return callback(null, true);
+    }
+    // Allow if explicitly listed
+    if (rawOrigins.includes(origin)) {
+        return callback(null, true);
+    }
+    // Allow any Vercel preview URL for the same project
+    if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+    }
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+};
+
+const corsOptions = { origin: rawOrigins.length ? originFn : '*', credentials: true };
+
 const io = new Server(httpServer, {
-    cors: { origin: allowedOrigin, methods: ['GET', 'POST'] }
+    cors: { origin: rawOrigins.length ? originFn : '*', methods: ['GET', 'POST'] }
 });
 
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 import platformRoutes from './routes/platformRoutes.js';
