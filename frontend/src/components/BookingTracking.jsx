@@ -54,11 +54,15 @@ const BookingTracking = () => {
 
     if (!booking) return <div className="tracking-container"><div className="loader" style={{ margin: 'auto' }}></div></div>;
 
+    const token = localStorage.getItem('authToken');
+    const userRole = localStorage.getItem('userRole');
+    const dashboardLink = userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard';
+
     return (
         <div className="tracking-container">
             <nav className="navbar-book">
-                <Link to="/" className="nav-brand"><LogoIcon /><span>MultiDomain</span></Link>
-                <Link to="/customer-dashboard" className="nav-link">Back to Dashboard</Link>
+                <Link to={token ? dashboardLink : "/"} className="nav-brand"><LogoIcon /><span>MultiDomain</span></Link>
+                <Link to={dashboardLink} className="nav-link">Back to Dashboard</Link>
             </nav>
 
             <div className="tracking-content">

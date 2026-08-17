@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User.js';
+import Service from '../models/Service.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -57,7 +58,11 @@ router.put('/:id', protect, async (req, res) => {
                 user.domain = req.body.domain || user.domain;
                 user.bio = req.body.bio || user.bio;
                 if (req.body.experience !== undefined) user.experience = req.body.experience;
-                if (req.body.availability !== undefined) user.availability = req.body.availability;
+                if (req.body.availability !== undefined) {
+                    user.availability = req.body.availability;
+                    // Sync the Service's active status with the provider's availability
+                    await Service.updateMany({ providerId: user._id }, { isActive: req.body.availability });
+                }
             }
 
             const updatedUser = await user.save();

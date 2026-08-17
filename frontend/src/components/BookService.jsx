@@ -152,10 +152,14 @@ const BookService = () => {
         </div>
     );
 
+    const token = localStorage.getItem('authToken');
+    const userRole = localStorage.getItem('userRole');
+    const dashboardLink = userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard';
+
     return (
         <div className="book-container">
             <nav className="navbar-book">
-                <Link to="/" className="nav-brand"><LogoIcon /><span>MultiDomain</span></Link>
+                <Link to={token ? dashboardLink : "/"} className="nav-brand"><LogoIcon /><span>MultiDomain</span></Link>
                 <div className="nav-buttons">
                     <button onClick={() => {
                         localStorage.removeItem('authToken');

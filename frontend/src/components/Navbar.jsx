@@ -22,12 +22,12 @@ const Navbar = ({ active }) => {
 
     return (
         <header className="dashboard-header">
-            <div className="header-left">
+            <Link to="/customer-dashboard" className="header-left" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                 <div className="logo-box-small">
                     <div className="logo-rect-small"></div>
                 </div>
                 <span className="header-brand">MultiDomain</span>
-            </div>
+            </Link>
             <nav className="header-nav">
                 <Link to="/customer-dashboard" className={`header-link ${active === 'dashboard' ? 'active' : ''}`}>
                     <HomeIcon /> <span>Dashboard</span>

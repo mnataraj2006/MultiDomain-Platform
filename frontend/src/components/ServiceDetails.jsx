@@ -85,17 +85,20 @@ const ServiceDetails = () => {
 
     if (!service) return <div className="details-container">Service not found</div>;
 
+    const userRole = localStorage.getItem('userRole');
+    const dashboardLink = userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard';
+
     return (
         <div className="details-container">
             {/* Navbar */}
             <nav className="navbar-details">
-                <Link to="/" className="nav-brand">
+                <Link to={isAuthenticated ? dashboardLink : "/"} className="nav-brand">
                     <LogoIcon />
                     <span>MultiDomain</span>
                 </Link>
                 <div className="nav-links">
                     <Link to="/services" className="nav-link">Browse Services</Link>
-                    {isAuthenticated && <Link to="/customer-dashboard" className="nav-link">Dashboard</Link>}
+                    {isAuthenticated && <Link to={dashboardLink} className="nav-link">Dashboard</Link>}
                 </div>
                 <div className="nav-buttons">
                     {isAuthenticated ? (

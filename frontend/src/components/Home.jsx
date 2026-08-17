@@ -38,6 +38,16 @@ const ShieldIcon = () => (
 );
 
 const Home = () => {
+    const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+    const [userRole, setUserRole] = React.useState('');
+
+    React.useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        const role = localStorage.getItem('userRole');
+        setIsAuthenticated(!!token);
+        if (role) setUserRole(role);
+    }, []);
+
     return (
         <div className="home-container">
             {/* Header */}
@@ -51,8 +61,20 @@ const Home = () => {
                     <a href="#about" className="nav-link">About</a>
                 </div>
                 <div className="nav-buttons">
-                    <Link to="/login" className="nav-btn-login">Login</Link>
-                    <Link to="/signup" className="nav-btn-signup">Signup</Link>
+                    {isAuthenticated ? (
+                        <Link 
+                            to={userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard'} 
+                            className="nav-btn-signup"
+                            style={{ padding: '8px 24px' }}
+                        >
+                            Go to Dashboard
+                        </Link>
+                    ) : (
+                        <>
+                            <Link to="/login" className="nav-btn-login">Login</Link>
+                            <Link to="/signup" className="nav-btn-signup">Signup</Link>
+                        </>
+                    )}
                 </div>
             </nav>
 

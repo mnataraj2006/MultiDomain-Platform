@@ -26,17 +26,21 @@ const originFn = (origin, callback) => {
     if (rawOrigins.includes(origin)) {
         return callback(null, true);
     }
-    // Allow any Vercel preview URL for the same project
+    // Allow any Vercel preview/production URL for the same project
     if (origin.endsWith('.vercel.app')) {
         return callback(null, true);
     }
-    callback(new Error(`CORS: origin ${origin} not allowed`));
+    // Fallback: If no explicit CORS_ORIGIN is defined in env, allow all by echoing (required for credentials)
+    if (rawOrigins.length === 0) {
+        return callback(null, true);
+    }
+    callback(null, false); // Reject cleanly without throwing an Express error
 };
 
-const corsOptions = { origin: rawOrigins.length ? originFn : '*', credentials: true };
+const corsOptions = { origin: originFn, credentials: true };
 
 const io = new Server(httpServer, {
-    cors: { origin: rawOrigins.length ? originFn : '*', methods: ['GET', 'POST'] }
+    cors: { origin: originFn, methods: ['GET', 'POST'] }
 });
 
 app.use(cors(corsOptions));

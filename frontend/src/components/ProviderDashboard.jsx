@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fetchCurrentUser, fetchProviderBookings, updateBookingStatus } from '../api';
+import { fetchCurrentUser, fetchProviderBookings, updateBookingStatus, updateUserProfile } from '../api';
 import './ProviderDashboard.css';
 
 // SVG Icons (Reusing style from Customer Dashboard)
@@ -48,7 +48,12 @@ const ProviderDashboard = () => {
             try {
                 // Fetch User Info
                 const userData = await fetchCurrentUser(token);
-                setProvider(prev => ({ ...prev, name: userData.name, domain: userData.domain || 'Service Provider' }));
+                setProvider(prev => ({
+                    ...prev,
+                    name: userData.name,
+                    domain: userData.domain || 'Service Provider',
+                    isOnline: userData.availability !== false
+                }));
 
                 // Fetch Real Bookings
                 const bookings = await fetchProviderBookings(userId, token);
@@ -100,9 +105,20 @@ const ProviderDashboard = () => {
         loadDashboardData();
     }, [navigate]);
 
-    const handleToggleOnline = () => {
-        setProvider(prev => ({ ...prev, isOnline: !prev.isOnline }));
-        // API call to update status would go here
+    const handleToggleOnline = async () => {
+        const newStatus = !provider.isOnline;
+        setProvider(prev => ({ ...prev, isOnline: newStatus }));
+        try {
+            const token = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+            if (token && userId) {
+                await updateUserProfile(userId, { availability: newStatus }, token);
+            }
+        } catch (error) {
+            console.error("Failed to update status on server:", error);
+            setProvider(prev => ({ ...prev, isOnline: !newStatus }));
+            alert("Failed to update availability status on the server.");
+        }
     };
 
     const handleAcceptRequest = async (id) => {

@@ -111,17 +111,20 @@ const BrowseServices = () => {
 
     const domains = ["All", "Home Services", "IT Services", "Healthcare", "Education", "Logistics"];
 
+    const userRole = localStorage.getItem('userRole');
+    const dashboardLink = userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard';
+
     return (
         <div className="browse-container">
             {/* Navbar */}
             <nav className="navbar-browse">
-                <Link to="/" className="nav-brand">
+                <Link to={isAuthenticated ? dashboardLink : "/"} className="nav-brand">
                     <LogoIcon />
                     <span>MultiDomain</span>
                 </Link>
                 <div className="nav-links">
                     <Link to="/services" className="nav-link active">Browse Services</Link>
-                    {isAuthenticated && <Link to="/customer-dashboard" className="nav-link">Dashboard</Link>}
+                    {isAuthenticated && <Link to={dashboardLink} className="nav-link">Dashboard</Link>}
                 </div>
                 <div className="nav-buttons">
                     {isAuthenticated ? (
