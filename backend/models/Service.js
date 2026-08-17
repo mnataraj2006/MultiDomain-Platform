@@ -10,6 +10,7 @@ const serviceSchema = mongoose.Schema({
     price: { type: Number, required: true },
     rating: { type: Number, default: 0 },
     reviewsCount: { type: Number, default: 0 },
+    location: { type: String },
     image: { type: String },
     isActive: { type: Boolean, default: true }
 }, {

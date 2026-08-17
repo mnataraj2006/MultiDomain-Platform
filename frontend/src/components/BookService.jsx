@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { fetchServiceDetails, createBooking } from '../api';
+import { fetchServiceDetails, createBooking, fetchCurrentUser } from '../api';
 import './BookService.css';
 import './Login.css'; // Access shared button styles if needed
 
@@ -24,6 +24,8 @@ const BookService = () => {
     });
 
     const [service, setService] = useState(null);
+    const [isLocating, setIsLocating] = useState(false);
+    const [locatingError, setLocatingError] = useState('');
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
@@ -32,18 +34,80 @@ const BookService = () => {
             return;
         }
 
-        const fetchService = async () => {
+        const fetchServiceAndUser = async () => {
             try {
-                const data = await fetchServiceDetails(serviceId);
-                setService(data);
+                const serviceData = await fetchServiceDetails(serviceId);
+                setService(serviceData);
+
+                // Pre-populate location with customer's saved address
+                const userData = await fetchCurrentUser(token);
+                if (userData && userData.address) {
+                    setBookingData(prev => ({
+                        ...prev,
+                        location: userData.address
+                    }));
+                }
             } catch (error) {
-                console.error("Failed to load service", error);
+                console.error("Failed to load booking details:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchService();
+        fetchServiceAndUser();
     }, [navigate, serviceId]);
+
+    const handleGetLiveLocation = () => {
+        if (!navigator.geolocation) {
+            setLocatingError('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        setIsLocating(true);
+        setLocatingError('');
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
+                        headers: {
+                            'Accept-Language': 'en'
+                        }
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.display_name) {
+                            setBookingData(prev => ({ ...prev, location: data.display_name }));
+                        } else {
+                            setBookingData(prev => ({ ...prev, location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                        }
+                    } else {
+                        setBookingData(prev => ({ ...prev, location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                    }
+                } catch (geocodeErr) {
+                    console.error("Geocoding error:", geocodeErr);
+                    setBookingData(prev => ({ ...prev, location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                } finally {
+                    setIsLocating(false);
+                }
+            },
+            (geoErr) => {
+                console.error("Geolocation error:", geoErr);
+                let msg = 'Failed to retrieve your location.';
+                if (geoErr.code === geoErr.PERMISSION_DENIED) {
+                    msg = 'Location permission was denied.';
+                } else if (geoErr.code === geoErr.POSITION_UNAVAILABLE) {
+                    msg = 'Location information is unavailable.';
+                } else if (geoErr.code === geoErr.TIMEOUT) {
+                    msg = 'Location request timed out.';
+                }
+                setLocatingError(msg);
+                setIsLocating(false);
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
+        );
+    };
 
     const handleChange = (e) => {
         setBookingData({ ...bookingData, [e.target.name]: e.target.value });
@@ -112,7 +176,7 @@ const BookService = () => {
                             <h3>{service.name}</h3>
                             <p>{service.providerName} &bull; {service.category}</p>
                         </div>
-                        <span className="summary-price">${service.price}</span>
+                        <span className="summary-price">₹{service.price}</span>
                     </div>
 
                     <form onSubmit={handleSubmit} className="booking-form">
@@ -141,7 +205,43 @@ const BookService = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Service Location</label>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <label style={{ margin: 0 }}>Service Location</label>
+                                <button
+                                    type="button"
+                                    onClick={handleGetLiveLocation}
+                                    disabled={isLocating}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: 'var(--primary-blue)',
+                                        fontSize: '0.8rem',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        padding: '4px 8px',
+                                        borderRadius: '6px',
+                                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                                        fontWeight: '600',
+                                        transition: 'all 0.2s',
+                                        lineHeight: '1'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 123, 255, 0.2)'}
+                                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 123, 255, 0.1)'}
+                                >
+                                    {isLocating ? (
+                                        <>
+                                            <span className="loader" style={{ width: '10px', height: '10px', borderWidth: '2px', marginRight: '4px', verticalAlign: 'middle' }}></span>
+                                            Locating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>📍</span> Get Live Location
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                             <input
                                 type="text"
                                 name="location"
@@ -150,7 +250,13 @@ const BookService = () => {
                                 required
                                 value={bookingData.location}
                                 onChange={handleChange}
+                                disabled={isLocating}
                             />
+                            {locatingError && (
+                                <span style={{ color: '#f87171', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>
+                                    {locatingError}
+                                </span>
+                            )}
                         </div>
 
                         <div className="form-group">

@@ -1,7 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchServices } from '../api';
+import { fetchServices, fetchCurrentUser } from '../api';
 import './BrowseServices.css';
+
+const isAround = (address1, address2) => {
+    if (!address1 || !address2) return true;
+    
+    const addr1 = address1.toLowerCase().trim();
+    const addr2 = address2.toLowerCase().trim();
+    
+    // Direct substring checks first
+    if (addr1.includes(addr2) || addr2.includes(addr1)) return true;
+
+    const cleanTokens = (addr) => {
+        return addr
+            .split(/[\s,.\-\/]+/)
+            .map(t => t.trim())
+            .filter(t => t.length > 2 && !['street', 'road', 'lane', 'avenue', 'drive', 'near', 'opposite', 'floor', 'india', 'united', 'states'].includes(t));
+    };
+
+    const tokens1 = cleanTokens(addr1);
+    const tokens2 = cleanTokens(addr2);
+
+    if (tokens1.length === 0 || tokens2.length === 0) return true;
+
+    return tokens1.some(t => tokens2.includes(t));
+};
 
 // Reuse Logo for consistency
 const LogoIcon = () => (
@@ -25,24 +49,32 @@ const BrowseServices = () => {
     const [services, setServices] = useState([]);
     const [filter, setFilter] = useState('All');
     const [search, setSearch] = useState('');
+    const [customerAddress, setCustomerAddress] = useState('');
 
     useEffect(() => {
         // Check Auth
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);
 
-        const loadServices = async () => {
+        const loadServicesAndUser = async () => {
             try {
                 const data = await fetchServices();
                 setServices(data.filter(s => s.isActive));
+
+                if (token) {
+                    const userData = await fetchCurrentUser(token);
+                    if (userData && userData.address) {
+                        setCustomerAddress(userData.address);
+                    }
+                }
             } catch (error) {
-                console.error("Failed to fetch services:", error);
+                console.error("Failed to load services or user data:", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        loadServices();
+        loadServicesAndUser();
     }, []);
 
     const handleLogout = () => {
@@ -67,7 +99,14 @@ const BrowseServices = () => {
         const serviceCategory = service.category || '';
         const matchesSearch = serviceName.toLowerCase().includes(search.toLowerCase()) ||
             serviceCategory.toLowerCase().includes(search.toLowerCase());
-        return matchesCategory && matchesSearch;
+            
+        // Location filter: show service if it is "around" customer's address
+        let matchesLocation = true;
+        if (customerAddress && service.location) {
+            matchesLocation = isAround(customerAddress, service.location);
+        }
+        
+        return matchesCategory && matchesSearch && matchesLocation;
     });
 
     const domains = ["All", "Home Services", "IT Services", "Healthcare", "Education", "Logistics"];
@@ -127,6 +166,24 @@ const BrowseServices = () => {
             </div>
 
             {/* Services Grid */}
+            {customerAddress && (
+                <div style={{
+                    padding: '10px 16px',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    border: '1px solid rgba(0, 123, 255, 0.2)',
+                    borderRadius: '8px',
+                    color: 'var(--text-main)',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    maxWidth: '800px',
+                    margin: '0 auto 1.5rem auto'
+                }}>
+                    <span>📍</span> Showing services near: <strong>{customerAddress}</strong>
+                </div>
+            )}
+
             <div className="services-section">
                 {loading ? (
                     <div className="loader-container">
@@ -145,7 +202,7 @@ const BrowseServices = () => {
                                     <div className="card-header">
                                         <div className="service-icon-box"><DisplayIcon /></div>
                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                                            <span className="service-price">${service.price || service.basePrice}</span>
+                                            <span className="service-price">₹{service.price || service.basePrice}</span>
                                             <span style={{ display: 'flex', alignItems: 'center', fontSize: '0.85rem', color: '#fbbf24', fontWeight: 'bold' }}>
                                                 <StarIcon /> {service.rating ? `${Number(service.rating).toFixed(1)} (${service.reviewsCount || 0})` : 'New'}
                                             </span>
@@ -153,6 +210,11 @@ const BrowseServices = () => {
                                     </div>
                                     <span className="service-domain">{service.category}</span>
                                     <h3 className="service-title">{service.name}</h3>
+                                    {service.location && (
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', margin: '4px 0 12px 0' }}>
+                                            <span>📍</span> <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '250px' }} title={service.location}>{service.location}</span>
+                                        </div>
+                                    )}
                                     <div className="card-actions">
                                         <button
                                             onClick={() => navigate(`/services/${service._id}`)}

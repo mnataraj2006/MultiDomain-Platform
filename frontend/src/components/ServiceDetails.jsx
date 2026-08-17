@@ -154,7 +154,7 @@ const ServiceDetails = () => {
                 {/* Sidebar */}
                 <div className="details-sidebar">
                     <div className="pricing-card">
-                        <span className="price-tag">${service.price}<span className="price-unit">/session</span></span>
+                        <span className="price-tag">₹{service.price}<span className="price-unit">/session</span></span>
                         <div className="availability">
                             <CheckIcon /> Available Now
                         </div>

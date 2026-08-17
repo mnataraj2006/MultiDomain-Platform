@@ -39,6 +39,7 @@ router.post('/', protect, authorize('Provider', 'Service Provider', 'Admin'), as
     try {
         // Automatically set providerId from token if not provided (though usually UI sends it, better to secure it)
         const serviceData = {
+            location: req.user.address || 'Anywhere',
             ...req.body,
             providerId: req.user._id,
             providerName: req.user.name // Ensure consistency
@@ -70,6 +71,7 @@ router.put('/:id', protect, authorize('Provider', 'Service Provider', 'Admin'), 
             service.price = req.body.price || service.price;
             service.category = req.body.category || service.category;
             service.image = req.body.image || service.image;
+            service.location = req.body.location || service.location;
 
             const updatedService = await service.save();
             res.json(updatedService);

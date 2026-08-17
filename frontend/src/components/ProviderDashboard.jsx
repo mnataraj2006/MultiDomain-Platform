@@ -224,7 +224,7 @@ const ProviderDashboard = () => {
                     <div className="stat-card">
                         <div className="stat-icon icon-blue"><DollarIcon /></div>
                         <div className="stat-info">
-                            <h3>${stats.todayEarnings}</h3>
+                            <h3>₹{stats.todayEarnings}</h3>
                             <p>Today's Earnings</p>
                         </div>
                     </div>
@@ -274,15 +274,15 @@ const ProviderDashboard = () => {
                         <div className="earnings-card">
                             <div className="earning-row">
                                 <span className="earning-label">Today</span>
-                                <span className="earning-amount">${stats.todayEarnings}</span>
+                                <span className="earning-amount">₹{stats.todayEarnings}</span>
                             </div>
                             <div className="earning-row">
                                 <span className="earning-label">This Week</span>
-                                <span className="earning-amount">${stats.weekEarnings}</span>
+                                <span className="earning-amount">₹{stats.weekEarnings}</span>
                             </div>
                             <div className="earning-row">
                                 <span className="earning-label">This Month</span>
-                                <span className="earning-amount">${stats.monthEarnings}</span>
+                                <span className="earning-amount">₹{stats.monthEarnings}</span>
                             </div>
                             <button className="view-details-btn" onClick={() => navigate('/provider/earnings')}>
                                 View Full Details
@@ -315,7 +315,7 @@ const ProviderDashboard = () => {
                                             <td>
                                                 <span className="status-tag status-completed">{activity.status}</span>
                                             </td>
-                                            <td>${activity.price || 0}</td>
+                                            <td>₹{activity.price || 0}</td>
                                         </tr>
                                     ))
                                 )}

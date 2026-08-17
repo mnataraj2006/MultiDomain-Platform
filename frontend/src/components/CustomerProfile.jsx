@@ -28,6 +28,60 @@ const CustomerProfile = () => {
     });
 
     const [userId, setUserId] = useState(null);
+    const [isLocating, setIsLocating] = useState(false);
+
+    const handleGetLiveLocation = () => {
+        if (!navigator.geolocation) {
+            alert('Geolocation is not supported by your browser. Please enter your address manually.');
+            return;
+        }
+
+        setIsLocating(true);
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    // Try to reverse geocode using OpenStreetMap Nominatim API
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
+                        headers: {
+                            'Accept-Language': 'en'
+                        }
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.display_name) {
+                            setFormData(prev => ({ ...prev, address: data.display_name }));
+                        } else {
+                            setFormData(prev => ({ ...prev, address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                        }
+                    } else {
+                        setFormData(prev => ({ ...prev, address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                    }
+                } catch (geocodeErr) {
+                    console.error("Geocoding error:", geocodeErr);
+                    setFormData(prev => ({ ...prev, address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+                } finally {
+                    setIsLocating(false);
+                }
+            },
+            (geoErr) => {
+                console.error("Geolocation error:", geoErr);
+                let msg = 'Failed to retrieve your location.';
+                if (geoErr.code === geoErr.PERMISSION_DENIED) {
+                    msg = 'Location permission was denied. Please enter your address manually.';
+                } else if (geoErr.code === geoErr.POSITION_UNAVAILABLE) {
+                    msg = 'Location information is unavailable. Please enter your address manually.';
+                } else if (geoErr.code === geoErr.TIMEOUT) {
+                    msg = 'Location request timed out. Please enter your address manually.';
+                }
+                alert(msg);
+                setIsLocating(false);
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
+        );
+    };
 
     useEffect(() => {
         // Auth Check
@@ -148,16 +202,53 @@ const CustomerProfile = () => {
                                     placeholder="+1 (555) 000-0000"
                                 />
                             </div>
-                            <div className="form-field">
-                                <label>Address</label>
-                                <input
-                                    type="text"
-                                    name="address"
-                                    value={formData.address}
-                                    onChange={handleChange}
-                                    placeholder="Enter your address"
-                                />
-                            </div>
+                             <div className="form-field">
+                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                     <label style={{ margin: 0 }}>Address</label>
+                                     <button
+                                         type="button"
+                                         onClick={handleGetLiveLocation}
+                                         disabled={isLocating}
+                                         style={{
+                                             background: 'none',
+                                             border: 'none',
+                                             color: 'var(--primary-blue)',
+                                             fontSize: '0.8rem',
+                                             cursor: 'pointer',
+                                             display: 'flex',
+                                             alignItems: 'center',
+                                             gap: '4px',
+                                             padding: '4px 8px',
+                                             borderRadius: '6px',
+                                             backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                                             fontWeight: '600',
+                                             transition: 'all 0.2s',
+                                             lineHeight: '1'
+                                         }}
+                                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 123, 255, 0.2)'}
+                                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 123, 255, 0.1)'}
+                                     >
+                                         {isLocating ? (
+                                             <>
+                                                 <span className="loader" style={{ width: '10px', height: '10px', borderWidth: '2px', marginRight: '4px', verticalAlign: 'middle' }}></span>
+                                                 Locating...
+                                             </>
+                                         ) : (
+                                             <>
+                                                 <span>📍</span> Get Live Location
+                                             </>
+                                         )}
+                                     </button>
+                                 </div>
+                                 <input
+                                     type="text"
+                                     name="address"
+                                     value={formData.address}
+                                     onChange={handleChange}
+                                     placeholder="Enter your address"
+                                     disabled={isLocating}
+                                 />
+                             </div>
                         </div>
                     </div>
 

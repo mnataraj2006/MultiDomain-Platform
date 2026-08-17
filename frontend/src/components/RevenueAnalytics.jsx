@@ -13,10 +13,10 @@ const RevenueAnalytics = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [filter, setFilter] = useState('Monthly');
     const [data, setData] = useState({
-        totalRevenue: '$0',
+        totalRevenue: '₹0',
         monthly: 'N/A',
         growth: 'N/A',
-        avgBooking: '$0',
+        avgBooking: '₹0',
         revenueTrend: [0],
         topProviders: []
     });
@@ -30,7 +30,7 @@ const RevenueAnalytics = () => {
                     fetchAnalyticsProviderRanking(token)
                 ]);
 
-                const fmt = (n) => (n || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                const fmt = (n) => (n || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
                 const topProvidersFormatted = rankData.slice(0, 5).map(r => ({
                     name: r.providerName || 'Unknown',
@@ -44,7 +44,7 @@ const RevenueAnalytics = () => {
                     monthly: 'N/A',
                     growth: 'N/A',
                     topProviders: topProvidersFormatted.length > 0 ? topProvidersFormatted : [
-                        { name: 'No Data', amount: '$0' }
+                        { name: 'No Data', amount: '₹0' }
                     ]
                 }));
                 setIsLoading(false);

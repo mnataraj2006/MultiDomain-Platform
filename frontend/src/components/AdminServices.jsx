@@ -218,7 +218,7 @@ const AdminServices = () => {
                                     type="text"
                                     name="price"
                                     className="admin-input"
-                                    placeholder="e.g. $50"
+                                    placeholder="e.g. ₹50"
                                     value={formData.price}
                                     onChange={handleChange}
                                 />
@@ -255,7 +255,7 @@ const AdminServices = () => {
                                         <span className="domain-tag">{service.domain}</span>
                                     </div>
                                     <div className="service-meta-text">
-                                        <span>{service.price}</span>
+                                        <span>₹{service.price}</span>
                                         <span>•</span>
                                         <span style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{service.description}</span>
                                     </div>

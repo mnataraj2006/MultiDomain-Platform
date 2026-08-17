@@ -21,7 +21,7 @@ const AdminAnalytics = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [stats, setStats] = useState({
         totalBookings: 0,
-        revenue: '$0',
+        revenue: '₹0',
         growth: 'N/A',
         activeUsers: 'N/A',
         demandByDomain: [],
@@ -43,7 +43,7 @@ const AdminAnalytics = () => {
 
                 // Format Revenue
                 const revVal = revenueData.totalRevenue || 0;
-                const revenue = revVal.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                const revenue = revVal.toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
                 const rankingData = await fetchAnalyticsProviderRanking(localStorage.getItem('authToken'));
 
@@ -122,7 +122,7 @@ const AdminAnalytics = () => {
                     <Link to="/admin/analytics/revenue" className="analytics-card" style={{ textDecoration: 'none' }}>
                         <div className="kpi-header">
                             <span className="kpi-title">Total Revenue</span>
-                            <div className="icon-box-sm" style={{ color: '#10b981' }}>$</div>
+                            <div className="icon-box-sm" style={{ color: '#10b981' }}>₹</div>
                         </div>
                         <div className="kpi-value">{stats.revenue}</div>
                         <div className="kpi-trend trend-up"></div>

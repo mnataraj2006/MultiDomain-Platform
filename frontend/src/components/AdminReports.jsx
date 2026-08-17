@@ -27,7 +27,7 @@ const AdminReports = () => {
     // Mock Report Types
     const reportTypes = [
         { id: 'demand', title: 'Demand Reports', description: 'Analyze booking volume by domain, service, and location.', icon: <AnalyticsIcon /> },
-        { id: 'revenue', title: 'Revenue Reports', description: 'Financial breakdowns, earnings by provider, and platform fees.', icon: <span style={{ fontSize: '1.5rem' }}>$</span> },
+        { id: 'revenue', title: 'Revenue Reports', description: 'Financial breakdowns, earnings by provider, and platform fees.', icon: <span style={{ fontSize: '1.5rem' }}>₹</span> },
         { id: 'provider', title: 'Provider Performance', description: 'Success rates, cancellation stats, and rating trends.', icon: <ServicesIcon /> },
         { id: 'user', title: 'User Activity', description: 'New registrations, active users, and retention metrics.', icon: <UsersIcon /> },
     ];

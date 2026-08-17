@@ -137,7 +137,7 @@ router.post('/google', async (req, res) => {
 // @route   PUT /api/auth/update-role
 // @access  Private
 router.put('/update-role', protect, async (req, res) => {
-    const { role, domain, phone, address, experience, availability } = req.body;
+    const { role, domain, phone, address, experience, availability, bio } = req.body;
     try {
         const user = await User.findById(req.user._id);
         if (!user) {
@@ -152,6 +152,7 @@ router.put('/update-role', protect, async (req, res) => {
             if (domain) user.domain = domain;
             if (experience) user.experience = experience;
             if (availability !== undefined) user.availability = availability;
+            if (bio) user.bio = bio;
         }
         await user.save();
 
@@ -162,11 +163,17 @@ router.put('/update-role', protect, async (req, res) => {
                     providerId: user._id,
                     providerName: user.name,
                     name: `${user.name} - ${user.domain || 'Professional'} Service`,
-                    description: `High quality ${user.domain || 'professional'} services provided by ${user.name}.`,
+                    description: bio || `High quality ${user.domain || 'professional'} services provided by ${user.name}.`,
                     category: user.domain || 'General',
+                    location: address || 'Anywhere',
                     price: 50, // Default base price
                     isActive: true
                 });
+            } else {
+                existingService.location = address || existingService.location;
+                if (bio) existingService.description = bio;
+                if (domain) existingService.category = domain;
+                await existingService.save();
             }
         }
 

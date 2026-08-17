@@ -93,6 +93,9 @@ const setupChangeStream = () => {
             console.log('Booking Change:', change.operationType);
             io.emit('bookingUpdate', change);
         });
+        bookingStream.on('error', (err) => {
+            console.log('Booking ChangeStream error (replica set needed?):', err.message);
+        });
 
         // Payment Watcher
         // Note: Payment model must be imported
@@ -102,6 +105,9 @@ const setupChangeStream = () => {
             paymentStream.on('change', (change) => {
                 console.log('Payment Change:', change.operationType);
                 io.emit('paymentUpdate', change);
+            });
+            paymentStream.on('error', (err) => {
+                console.log('Payment ChangeStream error (replica set needed?):', err.message);
             });
         }).catch(err => console.log('Payment watch error', err));
 

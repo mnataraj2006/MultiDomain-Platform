@@ -153,7 +153,7 @@ const ProviderRequests = () => {
                             <div key={req._id} className="request-full-card">
                                 <div className="card-header">
                                     <h3 className="service-title">{req.service || 'Service'}</h3>
-                                    <span className="price-tag">${req.price}</span>
+                                    <span className="price-tag">₹{req.price}</span>
                                 </div>
 
                                 <div className="card-body">

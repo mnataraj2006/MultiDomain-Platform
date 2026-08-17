@@ -139,22 +139,22 @@ const ProviderEarnings = () => {
                     <div className="earning-card">
                         <div className="earning-icon-wrapper bg-blue"><DollarIcon /></div>
                         <span className="earning-label">Today's Earnings</span>
-                        <span className="earning-amount">${stats.today}</span>
+                        <span className="earning-amount">₹{stats.today}</span>
                     </div>
                     <div className="earning-card">
                         <div className="earning-icon-wrapper bg-green"><DollarIcon /></div>
                         <span className="earning-label">This Month</span>
-                        <span className="earning-amount">${stats.month}</span>
+                        <span className="earning-amount">₹{stats.month}</span>
                     </div>
                     <div className="earning-card">
                         <div className="earning-icon-wrapper bg-purple"><DollarIcon /></div>
                         <span className="earning-label">Total Earnings</span>
-                        <span className="earning-amount">${stats.total}</span>
+                        <span className="earning-amount">₹{stats.total}</span>
                     </div>
                     <div className="earning-card">
                         <div className="earning-icon-wrapper bg-orange"><DollarIcon /></div>
                         <span className="earning-label">Pending Payout</span>
-                        <span className="earning-amount">${stats.pending}</span>
+                        <span className="earning-amount">₹{stats.pending}</span>
                     </div>
                 </div>
 
@@ -197,7 +197,7 @@ const ProviderEarnings = () => {
                                     </div>
                                 </div>
                                 <div className="trans-right">
-                                    <span className="trans-amount">${txn.amount.toFixed(2)}</span>
+                                    <span className="trans-amount">₹{txn.amount.toFixed(2)}</span>
                                     <span className={`status-${txn.status.toLowerCase()}`}>{txn.status}</span>
                                 </div>
                             </div>
