@@ -97,6 +97,10 @@ const ProviderDashboard = () => {
 
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                navigate('/login');
             } finally {
                 setIsLoading(false);
             }

@@ -37,16 +37,51 @@ const ShieldIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
 );
 
+import { fetchCurrentUser } from '../api';
+
 const Home = () => {
-    const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+    const [authStatus, setAuthStatus] = React.useState('loading'); // 'loading' | 'authenticated' | 'unauthenticated'
     const [userRole, setUserRole] = React.useState('');
 
     React.useEffect(() => {
         const token = localStorage.getItem('authToken');
         const role = localStorage.getItem('userRole');
-        setIsAuthenticated(!!token);
-        if (role) setUserRole(role);
+
+        if (!token) {
+            setAuthStatus('unauthenticated');
+            return;
+        }
+
+        const checkSession = async () => {
+            try {
+                const userData = await fetchCurrentUser(token);
+                if (userData && userData.role) {
+                    setUserRole(userData.role);
+                    localStorage.setItem('userRole', userData.role);
+                    setAuthStatus('authenticated');
+                } else {
+                    throw new Error("Malformed session response");
+                }
+            } catch (err) {
+                console.error("Session validation failed, clearing stale auth data:", err);
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                setUserRole('');
+                setAuthStatus('unauthenticated');
+            }
+        };
+
+        checkSession();
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        setUserRole('');
+        setAuthStatus('unauthenticated');
+    };
 
     return (
         <div className="home-container">
@@ -61,14 +96,40 @@ const Home = () => {
                     <a href="#about" className="nav-link">About</a>
                 </div>
                 <div className="nav-buttons">
-                    {isAuthenticated ? (
-                        <Link 
-                            to={userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard'} 
-                            className="nav-btn-signup"
-                            style={{ padding: '8px 24px' }}
-                        >
-                            Go to Dashboard
-                        </Link>
+                    {authStatus === 'loading' ? (
+                        <div style={{ width: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div style={{
+                                width: '18px',
+                                height: '18px',
+                                border: '2px solid rgba(255,255,255,0.1)',
+                                borderTopColor: 'var(--accent-blue, #007BFF)',
+                                borderRadius: '50%',
+                                animation: 'spin 0.8s linear infinite'
+                            }}></div>
+                            <style>{`
+                                @keyframes spin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
+                                }
+                            `}</style>
+                        </div>
+                    ) : authStatus === 'authenticated' ? (
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <Link 
+                                to={userRole === 'Provider' ? '/provider/dashboard' : userRole === 'Admin' ? '/admin/dashboard' : '/customer-dashboard'} 
+                                className="nav-btn-signup"
+                                style={{ padding: '8px 24px' }}
+                            >
+                                Go to Dashboard
+                            </Link>
+                            <button 
+                                onClick={handleLogout} 
+                                className="nav-btn-login" 
+                                style={{ background: 'none', border: '1px solid var(--border-subtle)', cursor: 'pointer', color: 'var(--text-main)' }}
+                            >
+                                Logout
+                            </button>
+                        </div>
                     ) : (
                         <>
                             <Link to="/login" className="nav-btn-login">Login</Link>

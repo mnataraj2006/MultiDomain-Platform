@@ -51,6 +51,10 @@ const CustomerDashboard = () => {
 
             } catch (error) {
                 console.error("Failed to load dashboard data:", error);
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                navigate('/login');
             } finally {
                 setIsLoading(false);
             }

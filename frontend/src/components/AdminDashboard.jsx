@@ -59,6 +59,10 @@ const AdminDashboard = () => {
 
             } catch (error) {
                 console.error("Failed to fetch admin data:", error);
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                navigate('/login');
             } finally {
                 setIsLoading(false);
             }
